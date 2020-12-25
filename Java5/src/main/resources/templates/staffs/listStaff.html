@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: header">
+</head>
+<body>
+
+	<div th:replace="fragments :: menu"></div>
+
+	<div class="container my-2">
+		<a
+		class="btn btn-secondary mb-3"
+		id="editBtn"
+		th:href="@{/staff/newOne}">
+			Create Staff
+		</a>
+	
+		<div class="p-3 bg-light shadow rounded">
+			<div class="d-flex justify-content-between">
+				<h3>Nhân viên</h3>
+				
+				<form 
+				class="form-inline"
+				th:action="@{'/staff/list/' + ${currentPage}}">
+					<input type="hidden" name="currentPage" th:value="${currentPage}" />
+					<input type="hidden" name="sortField" th:value="${sortField}" />
+					<input type="hidden" name="sortDir" th:value="${sortDir}" />
+					<input type="hidden" name="recordsNumber" th:value="${recordsNumber}" />
+					
+					<label class="mr-sm-2">Tìm:</label>
+					<input type="text" name="keyword" th:value="${keyword}" class="form-control mb-2 mr-sm-2">
+				</form>
+			</div>
+				
+			Hiển thị 
+			<select 
+			name="recordsNumber"
+			class="custom-select-sm"
+			onchange="window.location=this.options[this.selectedIndex].value">
+					<option 
+					th:each="i : ${#numbers.sequence(5, 20, 5)}"
+					th:if="${recordsNumber == i ? 'selected' : ''}"
+					th:text="${i}"
+					th:value="@{'/staff/list/1' + 
+						'/?sortField=name' + 
+						'&sortDir=' + ${sortDir} + 
+						'&recordsNumber=' + ${i} +
+						'&keyword=' + ${keyword}}"
+					th:selected="${i==recordsNumber}"
+					>
+					</option>
+			</select>
+			kết quả
+	
+			<table class="table table-dark table-striped table-hover my-3">
+				<thead>
+					<tr>
+						<th><a class="nav-link" 
+						th:href="@{'/staff/list/' + ${currentPage} + 
+						'/?sortField=name' + 
+						'&sortDir=' + ${reverseSort} + 
+						'&recordsNumber=' + ${recordsNumber} +
+						'&keyword=' + ${keyword}}"
+						>
+							Nhân viên
+							<th:block th:if="${sortField == 'name'}">
+								<span th:if="${sortDir == 'asc'}">
+									<i class="fas fa-chevron-up"></i>
+								</span>
+								<span th:if="${sortDir == 'desc'}">
+									<i class="fas fa-chevron-down"></i>
+								</span>
+							</th:block>
+						</a></th>
+						
+						<th><a class="nav-link"
+						th:href="@{'/staff/list/' + ${currentPage} + 
+						'/?sortField=gender' + 
+						'&sortDir=' + ${reverseSort} + 
+						'&recordsNumber=' + ${recordsNumber} +
+						'&keyword=' + ${keyword}}"
+						>
+							Giới tính
+							<th:block th:if="${sortField == 'gender'}">
+								<span th:if="${sortDir == 'asc'}">
+									<i class="fas fa-chevron-up"></i>
+								</span>
+								<span th:if="${sortDir == 'desc'}">
+									<i class="fas fa-chevron-down"></i>
+								</span>
+							</th:block>
+						</a></th>
+						
+						<th><a class="nav-link"
+						th:href="@{'/staff/list/' + ${currentPage} + 
+						'/?sortField=birthday' + 
+						'&sortDir=' + ${reverseSort} + 
+						'&recordsNumber=' + ${recordsNumber} +
+						'&keyword=' + ${keyword}}">
+							Ngày sinh
+							<th:block th:if="${sortField == 'birthday'}">
+								<span th:if="${sortDir == 'asc'}">
+									<i class="fas fa-chevron-up"></i>
+								</span>
+								<span th:if="${sortDir == 'desc'}">
+									<i class="fas fa-chevron-down"></i>
+								</span>
+							</th:block>
+						</a></th>
+						
+						<th><a class="nav-link" 
+						th:href="@{'/staff/list/' + ${currentPage} + 
+						'/?sortField=photo' + 
+						'&sortDir=' + ${reverseSort} + 
+						'&recordsNumber=' + ${recordsNumber} +
+						'&keyword=' + ${keyword}}">
+							Ảnh
+							<th:block th:if="${sortField == 'photo'}">
+								<span th:if="${sortDir == 'asc'}">
+									<i class="fas fa-chevron-up"></i>
+								</span>
+								<span th:if="${sortDir == 'desc'}">
+									<i class="fas fa-chevron-down"></i>
+								</span>
+							</th:block>
+						</a></th>
+						
+						<th><a class="nav-link" 
+						th:href="@{'/staff/list/' + ${currentPage} + 
+						'/?sortField=salary' + 
+						'&sortDir=' + ${reverseSort} + 
+						'&recordsNumber=' + ${recordsNumber} +
+						'&keyword=' + ${keyword}}">
+							Lương
+							<th:block th:if="${sortField == 'salary'}">
+								<span th:if="${sortDir == 'asc'}">
+									<i class="fas fa-chevron-up"></i>
+								</span>
+								<span th:if="${sortDir == 'desc'}">
+									<i class="fas fa-chevron-down"></i>
+								</span>
+							</th:block>
+						</a></th>
+						
+						<th><a class="nav-link" 
+						th:href="@{'/staff/list/' + ${currentPage} + 
+						'/?sortField=departs.name' + 
+						'&sortDir=' + ${reverseSort} + 
+						'&recordsNumber=' + ${recordsNumber} +
+						'&keyword=' + ${keyword}}">
+							Văn phòng
+							<th:block th:if="${sortField == 'departs.name'}">
+								<span th:if="${sortDir == 'asc'}">
+									<i class="fas fa-chevron-up"></i>
+								</span>
+								<span th:if="${sortDir == 'desc'}">
+									<i class="fas fa-chevron-down"></i>
+								</span>
+							</th:block>
+						</a></th>
+						
+						<th><span class="nav-link">Tác vụ</span></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="staff : ${listStaff}">
+						<td th:text="${staff.name}">name</td>
+						<td th:text="${staff.gender} == true ? 'Nam' : 'Nữ'">gender</td>
+						<td th:text="${staff.birthday}">birthday</td>
+						<td th:text="${staff.photo}">photo</td>
+						<td th:text="${staff.salary}">salary</td>
+						<td th:text="${staff.departs.name}">depart</td>
+						<td>
+							<a
+							class="btn btn-success"
+							id="editBtn"
+							th:href="@{/staff/findOne/(id=${staff.id})}">
+								<i class="fas fa-edit"></i>
+							</a>
+							
+							<a 
+							class="btn btn-danger"
+							th:href="@{/staff/delete/(id=${staff.id})}">
+								<i class="fas fa-trash-alt"></i>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+	
+			<div class="d-flex justify-content-between">
+				<p>Tổng bản ghi: [[${totalItems}]]</p>
+				<ul class="pagination">
+					<!-- Previous -->
+					<li th:class="'page-item '+${currentPage == 1 ? 'disabled' : ''}">
+						<a class="page-link"
+						th:href="@{'/staff/list/' + ${currentPage - 1} + 
+						'/?sortField=' + ${sortField} + 
+						'&sortDir=' + ${reverseSort} + 
+						'&recordsNumber=' + ${recordsNumber} +
+						'&keyword=' + ${keyword}}">Previous</a>
+					</li>
+					
+					<th:block th:if="${totalPages <= 10}">
+						<th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+							<li 
+							th:class="'page-item '+${currentPage == i ? 'active' : ''}">
+								<a class="page-link"
+								th:href="@{'/staff/list/' + ${i} + 
+								'/?sortField=' + ${sortField} + 
+								'&sortDir=' + ${reverseSort} + 
+								'&recordsNumber=' + ${recordsNumber} +
+								'&keyword=' + ${keyword}}"
+								th:text="${i}">page index</a>
+							</li>
+						</th:block>
+					</th:block>
+					
+					<th:block th:if="${totalPages > 10}">
+						<th:block th:if="${currentPage <= 5 || currentPage >= totalPages - 4}">
+							<span th:each="i : ${#numbers.sequence(1, 5)}">
+								<li th:class="'page-item '+${currentPage == i ? 'active' : ''}">
+									<a class="page-link" 
+									th:href="@{'/staff/list/' + ${i} + 
+									'/?sortField=' + ${sortField} + 
+									'&sortDir=' + ${reverseSort} + 
+									'&recordsNumber=' + ${recordsNumber} +
+									'&keyword=' + ${keyword}}"
+									th:text="${i}">page index</a>
+								</li>
+							</span>
+							
+							<li class="page-item">
+								<a class="page-link" 
+								th:href="@{'/staff/list/6' + 
+								'/?sortField=' + ${sortField} + 
+								'&sortDir=' + ${reverseSort} + 
+								'&recordsNumber=' + ${recordsNumber} +
+								'&keyword=' + ${keyword}}">...</a>
+							</li>
+							
+							<span class="page-item" th:each="i : ${#numbers.sequence(totalPages - 4, currentPage)}">
+								<li 
+								th:class="'page-item '+${currentPage == i ? 'active' : ''}">
+									<a class="page-link" 
+									th:href="@{'/staff/list/' + ${i} + 
+									'/?sortField=' + ${sortField} + 
+									'&sortDir=' + ${reverseSort} + 
+									'&recordsNumber=' + ${recordsNumber} +
+									'&keyword=' + ${keyword}}"
+									th:text="${i}">page index</a>
+								</li>
+							</span>
+						</th:block>
+						
+						<th:block th:if="${currentPage > 5 && currentPage < totalPages - 4}">
+							<li 
+							th:class="'page-item '+${currentPage == i ? 'active' : ''}">
+								<a class="page-link" 
+								th:href="@{'/staff/list/' + ${totalPages - 5} + 
+								'/?sortField=' + ${sortField} + 
+								'&sortDir=' + ${reverseSort} + 
+								'&recordsNumber=' + ${recordsNumber} +
+								'&keyword=' + ${keyword}}">...</a>
+							</li>
+							
+							<span th:each="i : ${#numbers.sequence(totalPages - 4, totalPages + 4)}">
+								<li class="page-item">
+									<a class="page-link" 
+									th:href="@{'/staff/list/' + ${i} + 
+									'/?sortField=' + ${sortField} + 
+									'&sortDir=' + ${reverseSort} + 
+									'&recordsNumber=' + ${recordsNumber} +
+									'&keyword=' + ${keyword}}"
+									th:text="${i}">page index</a>
+								</li>
+							</span>
+							
+							<li 
+							th:class="'page-item '+${currentPage == i ? 'active' : ''}">
+								<a class="page-link" 
+								th:href="@{'/staff/list/' + ${totalPages + 1} + 
+								'/?sortField=' + ${sortField} + 
+								'&sortDir=' + ${reverseSort} + 
+								'&recordsNumber=' + ${recordsNumber} +
+								'&keyword=' + ${keyword}}">...</a>
+							</li>
+						</th:block>
+					</th:block>
+					
+					<!-- Next -->
+					<li th:class="'page-item '+${currentPage == totalPages ? 'disabled' : ''}">
+						<a class="page-link"
+						th:href="@{'/staff/list/' + ${currentPage + 1} + 
+						'/?sortField=' + ${sortField} + 
+						'&sortDir=' + ${reverseSort} + 
+						'&recordsNumber=' + ${recordsNumber} +
+						'&keyword=' + ${keyword}}">Next</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- modals helper -->
+	
+	<!-- modal edit staff -->
+	
+	<div class="modal fade" id="myModal">
+		<div class="modal-dialog modal-dialog-scrollable">
+	  		<form th:action="@{/staff/createOrEdit}" method="POST" class="w-100">
+		    	<div class="modal-content"></div>
+	  		</form>
+		</div>
+	</div>
+
+	
+	<script>
+		console.log("hello")
+		
+		$(document).ready(function(){
+			$('#newBtn, #editBtn').on('click', function(event){
+				event.preventDefault()  
+			
+				$('.modal').modal("show").find(".modal-content").load($(this).attr("href")) 
+			})
+		})
+	</script>
+</body>
+</html>
+
+
+
+
+
