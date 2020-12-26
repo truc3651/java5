@@ -1,21 +1,39 @@
 
-/*$(document).ready(function(){
-	$('.table .modalBtn').on('click', function(event){
-		event.preventDefault()
+	console.log("hello")
+	
+	$(document).ready(function(){
+		// show modal with information
+		$('#newBtn, #editBtn').on('click', function(event){
+			event.preventDefault()  
 		
-		var href = $(this).attr("href")
-		$.get('href', function(staff, status){
-			$('.modal .id').val(staff.id)
-			$('.modal .name').val(staff.name)
-			$('.modal .birthday').val(staff.birthday)
-			$('.modal .photo').val(staff.photo)
-			$('.modal .email').val(staff.email)
-			$('.modal .phone').val(staff.phone)
-			$('.modal .address').val(staff.address)
-			$('.modal .salary').val(staff.salary)
-			$('.modal .notes').val(staff.notes)
+			$('.modal').modal("show").find(".modal-dialog").load($(this).attr("href"))
 		})
 		
-		$('.modal').modal()
+		// show the file name
+		$(".custom-file-input").on("change", function() {
+		  var fileName = $(this).val().split("\\").pop();
+		  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+		});
+		
+		$(".custom-file-input").change(function() {
+            showPhoto(this);
+        });
+		
 	})
-})*/
+	
+	function showPhoto(fileInput){
+        file = fileInput.files[0];
+        reader = new FileReader();
+
+        reader.onload = function(e) {
+            console.log(e);
+            $("#previewPhoto").attr("src", e.target.result);
+        };
+        reader.readAsDataURL(file);
+	}
+	
+	
+	
+	
+	
+	

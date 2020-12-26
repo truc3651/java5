@@ -38,12 +38,20 @@ public class StaffService {
 		
 	}
 	
-	public List<Staffs> GetAll(){
-		return repo.findAll();
-	}
-	
 	public Staffs Get(int id){
 		return repo.findById(id).get();
+	}
+	
+	public boolean IsEmailExist(String email) {
+		List<Staffs> result = repo.isEmailExist(email);
+		
+		return result.size() > 1 ? true : false;
+	}
+	
+	public boolean IsPhoneExist(String phone) {
+		List<Staffs> result = repo.isPhoneExist(phone);
+		
+		return result.size() > 1 ? true : false;
 	}
 	
 	public void Save(Staffs staff) {

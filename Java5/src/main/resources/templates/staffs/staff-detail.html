@@ -1,88 +1,229 @@
 
-<form th:action="@{createOrEdit}" th:object="${staff}" method="POST" class="w-100">
-	<!-- Modal Header -->
-	<div class="modal-header">
-		<h4 class="modal-title" th:text="${action}"></h4>
-		<button type="button" class="close" data-dismiss="modal">&times;</button>
-	</div>
+
+<form action="#" th:action="@{/staff/createOrEdit}" th:object="${staff}" 
+	enctype="multipart/form-data" method="POST" onsubmit="return validateForm()"
+	name="form" class="w-100">
 	
-	<!-- Modal body -->
-	<div class="modal-body">
-		<!-- <input type="hidden" name="id" th:field="*{id}"> -->
+	<div class="modal-content">
+		<!-- Modal Header -->
+		<div class="modal-header">
+			<h4 class="modal-title" th:text="${action}"></h4>
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+		</div>
 		
-		<div class="form-group">
-			<label for="email">Văn phòng:</label> 
-			<select th:field="*{departs}" class="custom-select-sm">
-				<option 
-				th:each="depart : ${departsList}" 
-				th:text="${depart.name}"
-				th:value="${depart.id}">
-				</option>
-			</select>
-		</div>
-		<div class="form-group">
-			<label>Họ và tên:</label> 
-			<input type="text" class="form-control" th:field="*{name}">
-		</div>
-		<div class="form-group d-flex">
-			<label class="mr-4">Giới tính:</label>
-	
-			<div class="custom-control custom-radio custom-control-inline">
-				<input 
-				id="nam"
-				type="radio" 
-				class="custom-control-input" 
-				th:field="*{gender}"
-				value="true"> 
-				<label class="custom-control-label" for="nam">Nam</label>
+		<!-- Modal body -->
+		<div class="modal-body">
+			<div id="warning" class="alert alert-warning d-none">
+			  <strong>Please fill all required fields!</strong>
 			</div>
-	
-			<div class="custom-control custom-radio custom-control-inline">
-				<input 
-				id="nu"
-				type="radio" 
-				class="custom-control-input" 
-				th:field="*{gender}"
-				value="false">
-				<label class="custom-control-label" for="nu">Nữ</label>
+			
+			<input type="hidden" name="id" th:field="*{id}">
+			
+			<div class="form-group">
+				<label>Văn phòng:</label> 
+				<select th:field="*{departs}" class="custom-select-sm">
+					<option 
+					th:each="depart : ${departsList}" 
+					th:text="${depart.name}"
+					th:value="${depart.id}">
+					</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label>Họ và tên:</label> 
+				<input type="text" name="name" class="form-control" th:field="*{name}" >
+				<div class="text-danger" id="nameErr"></div>
+			</div>
+			
+			<div class="form-group">
+				<label for="customFile">Ảnh:</label> 
+				
+				 <div class="custom-file mb-3">
+			      <input type="file" class="custom-file-input" id="customFile"
+			      	name="image"
+			      	accept="image/png, image/jpeg, image/jpg">
+			      <label class="custom-file-label" for="customFile"
+			      	 th:text="*{photo} ? *{photo} : 'Choose file'"></label>
+			      <input type="hidden" th:field="*{photo}">
+			      <div class="text-danger" id="photoErr"></div>
+			      
+			      <!-- preview photo -->
+		      	<div th:if="*{photo != ''}" class="previewPhoto my-3">
+		      		<img class="img-thumbnail" id="previewPhoto"
+		      		alt="preview photo" th:src="@{*{PhotosImagePath}}" width="60" height="60">
+		      	</div>
+		      	<div th:if="*{photo == ''}" class="my-3">
+		      		<img class="img-thumbnail" id="previewPhoto"
+		      		alt="preview photo" src="" width="60" height="60">
+		      	</div>
+			    </div>
+			</div>
+			
+			<div class="form-group d-flex">
+				<label class="mr-4">Giới tính:</label>
+		
+				<div class="custom-control custom-radio custom-control-inline">
+					<input 
+					id="nam"
+					type="radio" 
+					class="custom-control-input" 
+					th:field="*{gender}"
+					value="true"> 
+					<label class="custom-control-label" for="nam">Nam</label>
+				</div>
+		
+				<div class="custom-control custom-radio custom-control-inline">
+					<input 
+					id="nu"
+					type="radio" 
+					class="custom-control-input" 
+					th:field="*{gender}"
+					value="false">
+					<label class="custom-control-label" for="nu">Nữ</label>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label>Ngày sinh: (mm-dd-yyyy)</label> 
+				<input type="date" name="birthday" class="form-control" th:value="*{birthday}" >
+				<div class="text-danger" id="birthdayErr"></div>
+			</div>
+			
+			<div class="form-group">
+				<label>Email:</label> 
+				<input type="text" name="email" class="form-control" th:field="*{email}" >
+				<div class="text-danger" id="emailErr"></div>
+			</div>
+			
+			<div class="form-group">
+				<label>Số điện thoại:</label> 
+				<input type="text" name="phone" class="form-control" th:field="*{phone}" >
+				<div class="text-danger" id="phoneErr"></div>
+			</div>
+			
+			<div class="form-group">
+				<label>Địa chỉ:</label> 
+				<input type="text" class="form-control" th:field="*{address}">
+			</div>
+			
+			<div class="form-group">
+				<label>Lương:</label> 
+				<input type="text" name="salary" class="form-control"  th:field="*{salary}">
+				<div class="text-danger" id="salaryErr"></div>
+			</div>
+			
+			<div class="form-group">
+				<label>Ghi chú:</label> 
+				<input type="text" class="form-control"  th:field="*{notes}">
 			</div>
 		</div>
-		<div class="form-group">
-			<label>Ngày sinh:</label> 
-			<input type="date" class="form-control" th:field="*{birthday}">
-		</div>
-		<div class="form-group">
-			<label>Ảnh:</label> 
-			<input type="text" id="photo"
-				class="form-control" th:field="*{photo}">
-		</div>
-		<div class="form-group">
-			<label>Email:</label> 
-			<input type="text" class="form-control" th:field="*{email}">
-		</div>
-		<div class="form-group">
-			<label>Số điện thoại:</label> 
-			<input type="text" class="form-control" th:field="*{phone}">
-		</div>
-		<div class="form-group">
-			<label>Địa chỉ:</label> 
-			<input type="text" class="form-control" th:field="*{photo}">
-		</div>
-		<div class="form-group">
-			<label>Lương:</label> 
-			<input type="text" class="form-control"  th:field="*{salary}">
-		</div>
-		<div class="form-group">
-			<label>Ghi chú:</label> 
-			<input type="text" class="form-control"  th:field="*{notes}">
+		
+		<!-- Modal footer -->
+		<div class="modal-footer">
+			<input type="submit" class="btn btn-success" value="Go" onclick="return validateForm()" />
+			<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 		</div>
 	</div>
-	
-	<!-- Modal footer -->
-	<div class="modal-footer">
-		<button type="submit" class="btn btn-success">Go</button>
-		<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-	</div>
-
-
 </form>
+
+<script>
+	$(".custom-file-input").on("change", function() {
+	  var fileName = $(this).val().split("\\").pop();
+	  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+	})
+	
+	$(".custom-file-input").change(function() {
+        showPhoto(this);
+    });
+	
+	function showPhoto(fileInput){
+        file = fileInput.files[0];
+        reader = new FileReader();
+
+        reader.onload = function(e) {
+            console.log(e);
+            $("#previewPhoto").attr("src", e.target.result);
+        };
+        reader.readAsDataURL(file);
+	}
+	
+	function validateForm(){
+		var form = document.forms["form"]
+		
+		var name = form["name"].value
+		var photo = $('#previewPhoto').attr('src')
+		var birthday = form["birthday"].value
+		var email = form["email"].value
+		var phone = form["phone"].value
+		var salary = form["salary"].value
+		
+		var isValid = true
+		
+		var emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+		var phonePattern = /((09|03|07|08|05)+([0-9]{8})\b)/g
+		
+		var yearInput = birthday.substr(0, 4);
+		var now = new Date();
+        var currentYear = now.getFullYear();
+		
+		if(name == ""){
+			$('#nameErr').text('Name must be filled out')
+			isValid = false
+		}else
+			$('#nameErr').text('')
+			
+		if(photo == ""){
+			$('#photoErr').text('Photo must be filled out')
+			isValid = false
+		}else
+			$('#photoErr').text('')
+			
+		
+		if(currentYear - yearInput < 18 || currentYear - yearInput > 50){
+			$('#birthdayErr').text('Birthday must be between 18-50')
+			isValid = false
+		}else
+			$('#birthdayErr').text('')
+		
+		if(email == ""){
+			$('#emailErr').text('Email must be filled out')
+			isValid = false
+		}else if(!email.match(emailPattern)){
+			$('#emailErr').text('Email is invalid')
+			isValid = false
+		}else
+			$('#emailErr').text('')
+			
+		if(phone == ""){
+			$('#phoneErr').text('Phone must be filled out')
+			isValid = false
+		}else if(!phone.match(phonePattern)){
+			$('#phoneErr').text('Phone is invalid')
+			isValid = false
+		}else
+			$('#phoneErr').text('')
+			
+		if(isNaN(salary)){
+			$('#salaryErr').text('Salary must be a number')
+			isValid = false
+		}else
+			$('#salaryErr').text('')
+		
+		if(isValid == false){
+			$('#warning').toggleClass('d-none')
+		}
+		return isValid
+			
+	}
+</script> 
+
+
+
+
+
+
+
+
+
+
+

@@ -14,11 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-
-import org.springframework.format.annotation.DateTimeFormat;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "staffs")
@@ -31,28 +27,17 @@ public class Staffs {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_depart")
-//	@NotBlank
 	private Departs departs;
 	
-//	@NotBlank
 	private String name = "";
 	
-//	@AssertTrue
 	private Boolean gender = true;
 	
-	@DateTimeFormat(pattern = "dd-mm-yyyy")
 	private Date birthday = new Date(System.currentTimeMillis());
 	
 	private String photo = "";
-	
-//	@NotBlank
-//	@Email(message = "Email is not valid")
 	private String email = "";
-	
-//	@NotBlank
 	private String phone = "";
-	
-//	@NotBlank
 	private String address = "";
 	
 	private Double salary = 0.0;
@@ -60,6 +45,13 @@ public class Staffs {
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "staffs")
 	private Set<Records> recordses = new HashSet<Records>(0);
+	
+	@Transient
+    public String getPhotosImagePath() {
+        if (photo == null || (Integer)id == null) return null;
+         
+        return "/photos/staff/" + photo;
+    }
 	
 	@Override
 	public String toString() {

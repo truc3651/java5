@@ -21,4 +21,8 @@ public class DepartService {
 	public Departs GetFirst() {
 		return repo.findAll().get(0);
 	}
+	
+	public void Save(Departs depart) {
+		repo.save(depart);
+	}
 }

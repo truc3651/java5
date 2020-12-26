@@ -16,6 +16,12 @@ public interface StaffRepository extends PagingAndSortingRepository<Staffs, Inte
 			+ " like %?1%")
 	public Page<Staffs> findAll(String keyword, Pageable page);
 	
-	public List<Staffs> findAll();
 	
+	@Query("select s from Staffs s"
+			+ " where s.email=?1")
+	public List<Staffs> isEmailExist(String email);
+	
+	@Query("select s from Staffs s"
+			+ " where s.phone=?1")
+	public List<Staffs> isPhoneExist(String phone);
 }

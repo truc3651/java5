@@ -8,8 +8,7 @@
 		<div th:if="${param.error}"
 			class="alert alert-danger alert-dismissible fade show">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
-			<strong>Đăng nhập lỗi!</strong> Tên đăng nhập hoặc mật khẩu không
-			đúng
+			<strong>Đăng nhập lỗi!</strong> Tên đăng nhập hoặc mật khẩu không đúng
 		</div>
 
 		<div th:if="${param.logout}"
@@ -22,8 +21,9 @@
 			class="jumbotron bg-light shadow-sm rounded p-5">
 			<h4 class="text-center">Đăng nhập tài khoản</h4>
 			<div class="form-group">
-				<label for="usr">Tên đăng nhập:</label> <input type="text"
-					name="username" class="form-control" />
+				<label for="usr">Tên đăng nhập:</label> 
+				<input type="text" name="username" class="form-control" autofocus />
+				<!-- <p class="text-danger">Tên đăng nhập là bắt buộc</p> -->
 			</div>
 			<div class="form-group">
 				<label for="usr">Mật khẩu:</label>
@@ -32,6 +32,7 @@
 					<div class="input-group-append">
 						<span class="input-group-text">show</span>
 					</div>
+					<!-- <p class="text-danger">Mật khẩu là bắt buộc</p> -->
 				</div>
 			</div>
 			<input type="submit" value="Đăng Nhập"

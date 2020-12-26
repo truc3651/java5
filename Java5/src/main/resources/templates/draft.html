@@ -1,0 +1,18 @@
+
+	<div class="custom-file">
+		 <span id="cuatui"></span>
+		<input type="file" class="custom-file-input" id="customFile" /> <label
+			class="custom-file-label" for="customFile">Choose file</label>
+	</div>
+	
+	<script>
+	$(document).ready(function(){
+		
+		$('#cuatui').text("hahaha")
+		
+		$(".custom-file-input").on("change", function() {
+			  var fileName = $(this).val().split("\\").pop();
+			  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+			})
+	})
+	</script>

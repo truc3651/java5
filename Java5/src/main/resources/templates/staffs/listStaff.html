@@ -15,14 +15,20 @@
 			Create Staff
 		</a>
 	
+		<div th:if="${actionSuccess == true}" class="alert alert-success">
+		  <strong>Success!</strong> [[${actionName}]] Successfully
+		</div>
+		<div th:if="${actionFail == true}" class="alert alert-warning">
+		  <strong>Fail!</strong> [[${actionName}]] 
+		</div>
+	
 		<div class="p-3 bg-light shadow rounded">
 			<div class="d-flex justify-content-between">
 				<h3>Nhân viên</h3>
 				
 				<form 
 				class="form-inline"
-				th:action="@{'/staff/list/' + ${currentPage}}">
-					<input type="hidden" name="currentPage" th:value="${currentPage}" />
+				th:action="@{'/staff/list/1'}">
 					<input type="hidden" name="sortField" th:value="${sortField}" />
 					<input type="hidden" name="sortDir" th:value="${sortDir}" />
 					<input type="hidden" name="recordsNumber" th:value="${recordsNumber}" />
@@ -73,6 +79,8 @@
 							</th:block>
 						</a></th>
 						
+						<th><span class="nav-link">Ảnh</span></th>
+						
 						<th><a class="nav-link"
 						th:href="@{'/staff/list/' + ${currentPage} + 
 						'/?sortField=gender' + 
@@ -99,23 +107,6 @@
 						'&keyword=' + ${keyword}}">
 							Ngày sinh
 							<th:block th:if="${sortField == 'birthday'}">
-								<span th:if="${sortDir == 'asc'}">
-									<i class="fas fa-chevron-up"></i>
-								</span>
-								<span th:if="${sortDir == 'desc'}">
-									<i class="fas fa-chevron-down"></i>
-								</span>
-							</th:block>
-						</a></th>
-						
-						<th><a class="nav-link" 
-						th:href="@{'/staff/list/' + ${currentPage} + 
-						'/?sortField=photo' + 
-						'&sortDir=' + ${reverseSort} + 
-						'&recordsNumber=' + ${recordsNumber} +
-						'&keyword=' + ${keyword}}">
-							Ảnh
-							<th:block th:if="${sortField == 'photo'}">
 								<span th:if="${sortDir == 'asc'}">
 									<i class="fas fa-chevron-up"></i>
 								</span>
@@ -165,9 +156,15 @@
 				<tbody>
 					<tr th:each="staff : ${listStaff}">
 						<td th:text="${staff.name}">name</td>
+						<td>
+							<img th:src="@{${staff.PhotosImagePath}}" 
+							class="rounded" width="50" height="50">
+							
+						</td>
 						<td th:text="${staff.gender} == true ? 'Nam' : 'Nữ'">gender</td>
-						<td th:text="${staff.birthday}">birthday</td>
-						<td th:text="${staff.photo}">photo</td>
+						<td>
+							<p th:text="${#dates.format(staff.birthday, 'dd-MM-yyyy')}">birthday</p>
+						</td>
 						<td th:text="${staff.salary}">salary</td>
 						<td th:text="${staff.departs.name}">depart</td>
 						<td>
@@ -196,7 +193,7 @@
 						<a class="page-link"
 						th:href="@{'/staff/list/' + ${currentPage - 1} + 
 						'/?sortField=' + ${sortField} + 
-						'&sortDir=' + ${reverseSort} + 
+						'&sortDir=' + ${sortDir} + 
 						'&recordsNumber=' + ${recordsNumber} +
 						'&keyword=' + ${keyword}}">Previous</a>
 					</li>
@@ -208,7 +205,7 @@
 								<a class="page-link"
 								th:href="@{'/staff/list/' + ${i} + 
 								'/?sortField=' + ${sortField} + 
-								'&sortDir=' + ${reverseSort} + 
+								'&sortDir=' + ${sortDir} + 
 								'&recordsNumber=' + ${recordsNumber} +
 								'&keyword=' + ${keyword}}"
 								th:text="${i}">page index</a>
@@ -223,7 +220,7 @@
 									<a class="page-link" 
 									th:href="@{'/staff/list/' + ${i} + 
 									'/?sortField=' + ${sortField} + 
-									'&sortDir=' + ${reverseSort} + 
+									'&sortDir=' + ${sortDir} + 
 									'&recordsNumber=' + ${recordsNumber} +
 									'&keyword=' + ${keyword}}"
 									th:text="${i}">page index</a>
@@ -234,7 +231,7 @@
 								<a class="page-link" 
 								th:href="@{'/staff/list/6' + 
 								'/?sortField=' + ${sortField} + 
-								'&sortDir=' + ${reverseSort} + 
+								'&sortDir=' + ${sortDir} + 
 								'&recordsNumber=' + ${recordsNumber} +
 								'&keyword=' + ${keyword}}">...</a>
 							</li>
@@ -245,7 +242,7 @@
 									<a class="page-link" 
 									th:href="@{'/staff/list/' + ${i} + 
 									'/?sortField=' + ${sortField} + 
-									'&sortDir=' + ${reverseSort} + 
+									'&sortDir=' + ${sortDir} + 
 									'&recordsNumber=' + ${recordsNumber} +
 									'&keyword=' + ${keyword}}"
 									th:text="${i}">page index</a>
@@ -259,7 +256,7 @@
 								<a class="page-link" 
 								th:href="@{'/staff/list/' + ${totalPages - 5} + 
 								'/?sortField=' + ${sortField} + 
-								'&sortDir=' + ${reverseSort} + 
+								'&sortDir=' + ${sortDir} + 
 								'&recordsNumber=' + ${recordsNumber} +
 								'&keyword=' + ${keyword}}">...</a>
 							</li>
@@ -269,7 +266,7 @@
 									<a class="page-link" 
 									th:href="@{'/staff/list/' + ${i} + 
 									'/?sortField=' + ${sortField} + 
-									'&sortDir=' + ${reverseSort} + 
+									'&sortDir=' + ${sortDir} + 
 									'&recordsNumber=' + ${recordsNumber} +
 									'&keyword=' + ${keyword}}"
 									th:text="${i}">page index</a>
@@ -281,7 +278,7 @@
 								<a class="page-link" 
 								th:href="@{'/staff/list/' + ${totalPages + 1} + 
 								'/?sortField=' + ${sortField} + 
-								'&sortDir=' + ${reverseSort} + 
+								'&sortDir=' + ${sortDir} + 
 								'&recordsNumber=' + ${recordsNumber} +
 								'&keyword=' + ${keyword}}">...</a>
 							</li>
@@ -293,7 +290,7 @@
 						<a class="page-link"
 						th:href="@{'/staff/list/' + ${currentPage + 1} + 
 						'/?sortField=' + ${sortField} + 
-						'&sortDir=' + ${reverseSort} + 
+						'&sortDir=' + ${sortDir} + 
 						'&recordsNumber=' + ${recordsNumber} +
 						'&keyword=' + ${keyword}}">Next</a>
 					</li>
@@ -308,24 +305,8 @@
 	
 	<div class="modal fade" id="myModal">
 		<div class="modal-dialog modal-dialog-scrollable">
-	  		<form th:action="@{/staff/createOrEdit}" method="POST" class="w-100">
-		    	<div class="modal-content"></div>
-	  		</form>
 		</div>
 	</div>
-
-	
-	<script>
-		console.log("hello")
-		
-		$(document).ready(function(){
-			$('#newBtn, #editBtn').on('click', function(event){
-				event.preventDefault()  
-			
-				$('.modal').modal("show").find(".modal-content").load($(this).attr("href")) 
-			})
-		})
-	</script>
 </body>
 </html>
 
